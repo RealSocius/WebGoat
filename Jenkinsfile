@@ -163,13 +163,17 @@ pipeline {
       //   }
       // }
       stage('Secret Scanning') {
-        sh """
-          docker run --rm trufflesecurity/trufflehog:latest git file://. --fail
-        """
+        steps {
+          script {
+            sh """
+              docker run --rm trufflesecurity/trufflehog:latest git file://. --fail
+            """
+          }
+        }
       }
     }
-    post {
-        always {
+    // post {
+    //     always {
           // echo 'Removing container'
           // // Remove test and dast container
           // sh '''
@@ -178,6 +182,6 @@ pipeline {
           //       docker stop owasp
           //       docker rm owasp
           //   '''
-        }
-    }
+    //     }
+    // }
 }
