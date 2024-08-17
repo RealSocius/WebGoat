@@ -166,12 +166,14 @@ pipeline {
         steps {
           script {
             sh '''
+              #!/bin/bash
+
               # Führt den Docker-Container mit TruffleHog aus und gibt zurück wie viele Secrets gefunden wurden
               secret_count=$(docker run -v /home/user/WebGoat/:/scan trufflesecurity/trufflehog:latest filesystem /scan -j | grep -v "\\.git" | wc -l)
 
               echo $secret_number
 
-              if [ $secret_number != 0 ]; then
+              if [ $secret_number -gt 0 ]; then
                   exit 0
               fi
             '''
