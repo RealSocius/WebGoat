@@ -166,7 +166,7 @@ pipeline {
         steps {
           script {
             def rawOutput = sh(script: """
-                        docker run -v --rm ${WORKSPACE}:/scan trufflesecurity/trufflehog:latest filesystem /scan -j
+                        docker run --rm -v ${WORKSPACE}:/scan trufflesecurity/trufflehog:latest filesystem /scan -j
                     """, returnStdout: true).trim()
 
             // Gebe die rohe Ausgabe zu Debugging-Zwecken aus
