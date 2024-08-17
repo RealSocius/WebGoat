@@ -166,7 +166,7 @@ pipeline {
         steps {
           script {
             sh '''
-              echo ls
+              echo $(ls)
               # Führt den Docker-Container mit TruffleHog aus und gibt zurück wie viele Secrets gefunden wurden
               echo $(docker run --rm -v $WORKSPACE:/scan trufflesecurity/trufflehog:latest filesystem /scan -j)
               echo $(docker run --rm -v $WORKSPACE:/scan trufflesecurity/trufflehog:latest filesystem /scan -j | grep -v "\\.git")
