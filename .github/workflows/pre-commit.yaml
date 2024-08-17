@@ -9,18 +9,19 @@ permissions:
   id-token: write 
   issues: write 
   pull-requests: write
-  
+
 jobs: 
   TruffleHog: 
     runs-on: ubuntu-latest 
     defaults: 
       run: 
-        shell: bash 
+        shell: bash
     steps: 
       - name: Checkout code 
-        uses: actions/checkout@v3 
+        uses: actions/checkout@v3
         with: 
           fetch-depth: 0
+
       - name: TruffleHog OSS 
         id: trufflehog 
         uses: trufflesecurity/trufflehog@add-actions-cli-switch 
@@ -30,6 +31,7 @@ jobs:
           base: "${{ github.event.repository.default_branch }}" 
           head: HEAD 
           extra_args: --debug --only-verified
+          
       - name: Scan Results Status 
         if: steps.trufflehog.outcome == 'failure' 
         run: exit 1
