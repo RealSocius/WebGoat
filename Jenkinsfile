@@ -180,9 +180,15 @@ pipeline {
         }
       }
     }
-    // post {
-    //     always {
-          // echo 'Removing container'
+    post {
+        always {
+          echo 'Removing DAST-Container'
+          // Remove secret scanning container
+          sh '''
+                docker stop truffle
+                docker rm truffle
+            '''
+          // echo 'Removing DAST-Container'
           // // Remove test and dast container
           // sh '''
           //       docker stop webgoat
@@ -190,6 +196,6 @@ pipeline {
           //       docker stop owasp
           //       docker rm owasp
           //   '''
-    //     }
-    // }
+        }
+    }
 }
