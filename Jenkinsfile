@@ -165,29 +165,19 @@ pipeline {
       stage('Secret Scanning') {
         steps {
           script {
-            def rawOutput = sh(script: """
-                        docker run --rm -v ${WORKSPACE}:/scan trufflesecurity/trufflehog:latest filesystem /scan -j
-                    """, returnStdout: true).trim()
+            sh '''
+              echo $(ls $WORKSPACE)
+              # Führt den Docker-Container mit TruffleHog aus und gibt zurück wie viele Secrets gefunden wurden
+              echo $(docker run --rm -v $WORKSPACE:/scan --entrypoint="" -it trufflesecurity/trufflehog:latest ls -la /scan)
+              echo $(docker run --rm -v $WORKSPACE:/scan trufflesecurity/trufflehog:latest filesystem /scan -j | grep -v "\\.git")
+              secret_count=$(docker run --rm -v $WORKSPACE:/scan trufflesecurity/trufflehog:latest filesystem /scan -j | grep -v "\\.git" | wc -l)
 
-            // Gebe die rohe Ausgabe zu Debugging-Zwecken aus
-            echo "Raw output from TruffleHog:"
-            echo rawOutput
+              echo $secret_number
 
-            // Führe grep und wc -l auf der Ausgabe aus, um Treffer zu zählen
-            def secretCount = sh(script: """
-                echo "${rawOutput}" | grep -v "\\.git" | wc -l
-            """, returnStdout: true).trim()
-
-            echo "Number of secrets found: ${secretCount}"
-
-            // Wenn die Anzahl der Treffer größer als 0 ist, beende den Build erfolgreich
-            if (secretCount.toInteger() > 0) {
-                echo "Sensitive information found!"
-                currentBuild.result = 'UNSTABLE'
-            } else {
-                echo "No sensitive information found."
-            }
-
+              if [ "$secret_number" != "0" ]; then
+                  exit 1
+              fi
+            '''
           }
         }
       }
