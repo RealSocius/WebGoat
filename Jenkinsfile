@@ -172,9 +172,7 @@ pipeline {
 
               secret_count=$(docker exec truffle filesystem /scan -j | grep -v "\\.git" | wc -l)
 
-              echo $secret_number
-
-              if [ "$secret_number" != "0" ]; then
+              if [ "$secret_count" != "0" ]; then
                   exit 1
               fi
             '''
