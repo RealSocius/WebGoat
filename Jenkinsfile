@@ -166,7 +166,7 @@ pipeline {
         steps {
           script {
             sh """
-              docker run --rm trufflesecurity/trufflehog:latest git file://. --fail
+              docker run -v ./:/scan --rm trufflesecurity/trufflehog:latest filesystem /scan --fail
             """
           }
         }
