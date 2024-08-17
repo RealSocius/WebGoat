@@ -173,7 +173,7 @@ pipeline {
 
               echo $secret_number
 
-              if [ $secret_number -gt 0 ]; then
+              if [ -n $secret_number ]; then
                   exit 0
               fi
             '''
