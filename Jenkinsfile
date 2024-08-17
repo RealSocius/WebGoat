@@ -165,9 +165,19 @@ pipeline {
       stage('Secret Scanning') {
         steps {
           script {
-            docker.image('trufflesecurity/trufflehog:latest').withRun('-v $WORKSPACE:/scan', 'filesystem /scan -j') { c ->
-                sh 'echo ls'
-            }
+            sh '''
+              # Führt den Docker-Container mit TruffleHog aus und gibt zurück wie viele Secrets gefunden wurden
+              docker run -dt --name truffle trufflesecurity/trufflehog:latest
+              docker cp $WORKSPACE truffle:/scan
+
+              secret_count=$(docker exec truffle filesystem /scan -j | grep -v "\\.git" | wc -l)
+
+              echo $secret_number
+
+              if [ "$secret_number" != "0" ]; then
+                  exit 1
+              fi
+            '''
           }
         }
       }
